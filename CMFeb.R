@@ -1,7 +1,5 @@
 # COMMON MURRE MORPHOMETRICS PROJECT
-#ds <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/COASST Full 23Oct2017.csv")
-#ds <- data.frame (ds)
-fs <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/Coasst data with molt field.csv")
+fs <- read.csv ("../Dependent Variables/Coasst data with molt field.csv")
 fs <- data.frame (fs)
 
 # Separates COMU from everyone else.
@@ -1024,10 +1022,10 @@ gam16$predict.gam.yeargam..type....response..[which.max(gam16$predict.gam.yearga
 
 
 ## Variables for GLM
-sprtrns <- read.csv ("C:/Users/jka3/Desktop/COASST/spr_trns.csv")
-peakht <- read.csv ("C:/Users/jka3/Desktop/COASST/pk_heights.csv")
-peakloc <- read.csv ("C:/Users/jka3/Desktop/COASST/peakloc.csv")
-stpht <- read.csv ("C:/Users/jka3/Desktop/COASST/st_pht.csv")
+sprtrns <- read.csv ("./murrepredictors/spr_trns.csv")
+peakht <- read.csv ("../Dependent variables/pk_heights.csv")
+peakloc <- read.csv ("../Dependent variables/peakloc.csv")
+stpht <- read.csv ("../Dependent variables/st_pht.csv")
 
 glmpkloc <- glm(peakloc$DOY.PE~Spr.Trs,data=sprtrns,family=gaussian())
 summary(glmpkloc) # display results
@@ -1065,13 +1063,14 @@ qqline(res)
 # Code for processing and producing wave/storm indices
 
 # read in datafiles and replace NA
-setwd("C:/Users/jka3/Desktop/COASST/COASST R Work/Storm indices/")
+setwd("./murrepredictors/Storm indices/")
 s46029 <- read.csv(file="S46029.csv")
 s46029$WVHT[s46029$WVHT > 90] <- NA
 s46029$WVHT[s46029$WVHT < 0.25] <- NA		# removes very low values that are likely errors
 s46041 <- read.csv(file="S46041.csv")
 s46041$WVHT[s46041$WVHT > 90] <- NA
 s46041$WVHT[s46041$WVHT < 0.25] <- NA		# removes very low values that are likely errors
+setwd("../..")
 
 # convert y-m-d-h to date for initial plot checks
 chardate <- paste(s46029$YYYY, "-", s46029$MM, "-", s46029$DD, " ", s46029$hh, ":00:00", sep="")
@@ -1316,11 +1315,11 @@ allwa<- data.frame(tapply(coadultswa$X.1, list(coadultswa$Month, coadultswa$Year
 allorca<- data.frame(tapply(coadultsorca$X.1, list(coadultsorca$Month, coadultsorca$Year), length))
 
 #Add in upwelling indices
-febcumup <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/Cum Upwelling Indices/cum_upfeb_may.csv", header=TRUE)
-juncumup <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/Cum Upwelling Indices/cum_upjun_aug.csv", header=TRUE)
+febcumup <- read.csv ("./murrepredictors/Cum Upwelling Indices/cum_upfeb_may.csv", header=TRUE)
+juncumup <- read.csv ("./murrepredictors/Cum Upwelling Indices/cum_upjun_aug.csv", header=TRUE)
 
 #Add in weights
-glmwt <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/PeakHtPeakLocWts.csv")
+glmwt <- read.csv ("../Dependent variables/PeakHtPeakLocWts.csv")
 
 library(MuMIn)
 
@@ -1833,7 +1832,7 @@ S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
 #991.4794
 ############################################Duration##################################################################
 
-duration <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/duration.csv")
+duration <- read.csv ("../Dependent variables/duration.csv")
 
 glmdur <- glm(duration$Duration~Spr.Trs+waveindex$Ave.Hsig+waveindex$Prop.Hsig+waveindex$Nevent.Hsig,data=sprtrns,weights=glmwt$Dur.Wt, family=gaussian())
 
@@ -2085,7 +2084,7 @@ S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
 #1094.24
 
 # Bring in encounter rate data
-encrates <- read.csv ("C:/Users/jka3/Desktop/COASST/COASST R Work/encrates.csv")
+encrates <- read.csv ("../Dependent variables/encrates.csv")
 
 glmenc <- glm(encrates$Sum~Spr.Trs+waveindex$Ave.Hsig+waveindex$Prop.Hsig+waveindex$Nevent.Hsig,data=sprtrns,family=gaussian())
 
