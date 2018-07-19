@@ -1,5 +1,6 @@
 # COMMON MURRE MORPHOMETRICS PROJECT
-fs <- read.csv ("../Dependent Variables/Coasst data with molt field.csv")
+setwd("C:/Users/jka3/Desktop/COASST/COASST R Work/murreglm")
+fs <- read.csv ("../Dependent variables/Coasst data with molt field.csv")
 fs <- data.frame (fs)
 
 # Separates COMU from everyone else.
