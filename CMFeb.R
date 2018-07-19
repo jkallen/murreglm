@@ -308,7 +308,7 @@ gammatron3000<- function(year) {
   lines(upr,type="l",col="purple")
   lines(lwr,type="l",col="green")
 }
-*gammatron5000(two)
+#gammatron5000(two)
 gammatron3000(three)
 gammatron3000(four)
 gammatron3000(five)
@@ -353,7 +353,7 @@ lwr <- cbind.data.frame(lwr, pred.df)
   #lines(lwr$newday, lwr$lwr, col="green")
   return(yearresult)
 }
-gam2<- gammatron5000(two)
+#gam2<- gammatron5000(two)
 uppatron5000<- function(year) {
   year$yday <- yday(year$Survey.Date)
   #year <- two
@@ -446,11 +446,14 @@ abline(h=.1)
 gam6 <- gammatron5000(six)
 upr6 <- uppatron5000(six)
 lwr6<- downatron5000(six)
+upr6[which(upr6$newday < 175),] = min(upr6$upr,.06) # BIrds don't molt in March!
 plot(gam6$day, gam6$predict.gam.yeargam..type....response.., col="darkturquoise",
      xlab="Survey Date", ylab="Proportion in Molt", ylim=c(0,1))
 lines(upr6$newday, upr6$upr, col="purple")
 lines(lwr6$newday, lwr6$lwr, col="green")
+min(upr6)
 abline(h=.1)
+#hist(upr6$upr)
 
 gam7 <- gammatron5000(seven)
 upr7 <- uppatron5000(seven)
@@ -1339,6 +1342,8 @@ abline(h=0, lty=2)
 qqnorm(res)
 qqline(res)
 
+library(qpcR)
+
 #Set 1- AvgH and ST
 htavgst1 <- glm(peakht$Peak.Height~1,weights=glmwt$Peak.Ht.Wt, family=gaussian())
 S1M1<- AICc(htavgst1)
@@ -1365,6 +1370,9 @@ htavgst8 <- glm(peakht$Peak.Height~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs+waveindex$
 S1M8 <-AICc(htavgst8)
 
 S1M1 + S1M2+ S1M3+ S1M4+ S1M5+ S1M6 + S1M7 + S1M8
+htaic <- unlist(list(S1M1, S1M2, S1M3, S1M4, S1M5, S1M6, S1M7, S1M8))
+htaicweights <- akaike.weights(htaic)
+(htaicweights$weights)
 #Winner winner chicken dinner
 
 #Set 2- AvgH and Feb
@@ -1612,8 +1620,8 @@ locavgst8 <- glm(peakloc$DOY.PE~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs+waveindex$Ave
 S1M8 <-AICc(locavgst8)
 
 S1M1 + S1M2+ S1M3+ S1M4+ S1M5+ S1M6 + S1M7 + S1M8
-#978.4946
-# Winner winner
+#960.8521
+
 #Set 2- AvgH and Feb
 locavgfeb1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S2M1<- AICc(locavgfeb1)
@@ -1640,7 +1648,7 @@ locavgfeb8 <- glm(peakloc$DOY.PE~febcumup$Upwelling.Index*waveindex$Ave.Hsig+feb
 S2M8 <- AICc(locavgfeb8)
 
 S2M1+ S2M2 + S2M3+ S2M4 + S2M5+ S2M6+ S2M7+ S2M8
-#983.6913
+#966.0488
 #Set 3- AvgH and Jun
 locavgjun1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S3M1 <- AICc(locavgjun1)
@@ -1667,7 +1675,7 @@ locavgjun8 <- glm(peakloc$DOY.PE~juncumup$Upwelling.index*waveindex$Ave.Hsig+jun
 S3M8 <- AICc(locavgjun8)
 
 S3M1+ S3M2 + S3M3+ S3M4 + S3M5+ S3M6+ S3M7+ S3M8
-#984.8868
+#967.2444
 #Set 4- PropH and ST
 locpropst1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S4M1 <- AICc(locpropst1)
@@ -1694,7 +1702,7 @@ locpropst8 <- glm(peakloc$DOY.PE~Spr.Trs*waveindex$Prop.Hsig+Spr.Trs+waveindex$P
 S4M8 <- AICc(locpropst8)
 
 S4M1+ S4M2 + S4M3+ S4M4 + S4M5+ S4M6+ S4M7+ S4M8
-#989.6992
+#972.0568
 #Set 5- PropH and Feb
 locpropfeb1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S5M1 <- AICc(locpropfeb1)
@@ -1721,7 +1729,7 @@ locpropfeb8 <- glm(peakloc$DOY.PE~febcumup$Upwelling.Index*waveindex$Prop.Hsig+f
 S5M8 <- AICc(locpropfeb8)
 
 S5M1+ S5M2 + S5M3+ S5M4 + S5M5+ S5M6+ S5M7+ S5M8
-#993.7087
+#976.0663
 #Set 6- PropH and Jun
 locpropjun1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S6M1 <- AICc(locpropjun1)
@@ -1748,7 +1756,7 @@ locpropjun8 <- glm(peakloc$DOY.PE~juncumup$Upwelling.index*waveindex$Prop.Hsig+j
 S6M8 <- AICc(locpropjun8)
 
 S6M1+ S6M2 + S6M3+ S6M4 + S6M5+ S6M6+ S6M7+ S6M8
-#977.4755
+#959.8331
 
 #Set 7- Nevents and ST
 locneventst1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
@@ -1776,7 +1784,11 @@ locneventst8 <- glm(peakloc$DOY.PE~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs+waveind
 S7M8 <- AICc(locneventst8)
 
 S7M1+ S7M2 + S7M3+ S7M4 + S7M5+ S7M6+ S7M7+ S7M8
-#982.2135
+locaic <- unlist(list(S7M1, S7M2, S7M3, S7M4, S7M5, S7M6, S7M7, S7M8))
+locaicweights <- akaike.weights(locaic)
+(locaicweights$weights)
+#964.5711
+#winner
 #Set 8- Nevents and Feb
 locneventfeb1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S8M1 <- AICc(locneventfeb1)
@@ -1803,7 +1815,7 @@ locneventfeb8 <- glm(peakloc$DOY.PE~febcumup$Upwelling.Index*waveindex$Nevent.Hs
 S8M8 <- AICc(locneventfeb8)
 
 S8M1+ S8M2 + S8M3+ S8M4 + S8M5+ S8M6+ S8M7+ S8M8
-#994.7333
+#977.0908
 #Set 9- Nevents and June
 locneventjun1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S9M1 <- AICc(locneventjun1)
@@ -1829,7 +1841,7 @@ S9M7 <- AICc(locneventjun7)
 locneventjun8 <- glm(peakloc$DOY.PE~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 
 S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
-#991.4794
+
 ############################################Duration##################################################################
 
 duration <- read.csv ("../Dependent variables/duration.csv")
@@ -1863,6 +1875,9 @@ S1M8 <-AICc(duravgst8)
 
 S1M1 + S1M2+ S1M3+ S1M4+ S1M5+ S1M6 + S1M7 + S1M8
 #1086.713
+duraic <- unlist(list(S1M1, S1M2, S1M3, S1M4, S1M5, S1M6, S1M7, S1M8))
+duraicweights<- akaike.weights(duraic)
+(duraicweights$weights)
 # Winner winner
 #Set 2- AvgH and Feb
 duravgfeb1 <- glm(duration$Duration~1,weights=glmwt$Dur.Wt, family=gaussian())
@@ -1918,7 +1933,7 @@ S3M8 <- AICc(duravgjun8)
 
 S3M1+ S3M2 + S3M3+ S3M4 + S3M5+ S3M6+ S3M7+ S3M8
 #1086.001
-#Winner, S3m3
+
 #Set 4- PropH and ST
 durpropst1 <- glm(duration$Duration~1,weights=glmwt$Dur.Wt, family=gaussian())
 S4M1 <- AICc(durpropst1)
@@ -2090,247 +2105,250 @@ glmenc <- glm(encrates$Sum~Spr.Trs+waveindex$Ave.Hsig+waveindex$Prop.Hsig+wavein
 
 
 #Set 1- AvgH and ST
-encavgst1 <- glm(encrates$Sum~1, family=gaussian())
+encavgst1 <- glm(encrates$Sum~1,weights = glmwt$Er.Wt, family=gaussian())
 S1M1<- AICc(encavgst1)
 
-encavgst2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgst2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns,weights = glmwt$Er.Wt, family=gaussian())
 S1M2<- AICc(encavgst2)
 
-encavgst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, family=gaussian())
+encavgst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M3 <-AICc(encavgst3)
 
-encavgst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M4 <-AICc(encavgst4)
 
-encavgst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M5<- AICc(encavgst5)
 
-encavgst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M6 <-AICc(encavgst6)
 
-encavgst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs,data=sprtrns, family=gaussian())
+encavgst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M7 <- AICc(encavgst7)
 
-encavgst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Ave.Hsig+Spr.Trs+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S1M8 <-AICc(encavgst8)
 
 S1M1 + S1M2+ S1M3+ S1M4+ S1M5+ S1M6 + S1M7 + S1M8
 #616.0646
 
 #Set 2- AvgH and Feb
-encavgfeb1 <- glm(encrates$Sum~1, family=gaussian())
+encavgfeb1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S2M1<- AICc(encavgfeb1)
 
-encavgfeb2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgfeb2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M2 <- AICc(encavgfeb2)
 
-encavgfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encavgfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M3 <-AICc(encavgfeb3)
 
-encavgfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M4 <-AICc(encavgfeb4)
 
-encavgfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M5 <-AICc(encavgfeb5)
 
-encavgfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M6 <-AICc(encavgfeb6)
 
-encavgfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encavgfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M7 <-AICc(encavgfeb7)
 
-encavgfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+febcumup$Upwelling.Index+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Ave.Hsig+febcumup$Upwelling.Index+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S2M8 <- AICc(encavgfeb8)
 
 S2M1+ S2M2 + S2M3+ S2M4 + S2M5+ S2M6+ S2M7+ S2M8
 #619.5071
 #Set 3- AvgH and Jun
-encavgjun1 <- glm(encrates$Sum~1, family=gaussian())
+encavgjun1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S3M1 <- AICc(encavgjun1)
 
-encavgjun2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgjun2 <- glm(encrates$Sum~waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M2 <- AICc(encavgjun2)
 
-encavgjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encavgjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M3 <- AICc(encavgjun3)
 
-encavgjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M4 <- AICc(encavgjun4)
 
-encavgjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M5 <- AICc(encavgjun5)
 
-encavgjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M6 <- AICc(encavgjun6)
 
-encavgjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encavgjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M7 <- AICc(encavgjun7)
 
-encavgjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+juncumup$Upwelling.index+waveindex$Ave.Hsig,data=sprtrns, family=gaussian())
+encavgjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Ave.Hsig+juncumup$Upwelling.index+waveindex$Ave.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S3M8 <- AICc(encavgjun8)
 
 S3M1+ S3M2 + S3M3+ S3M4 + S3M5+ S3M6+ S3M7+ S3M8
 #631.5018
 #Set 4- PropH and ST
-encpropst1 <- glm(encrates$Sum~1, family=gaussian())
+encpropst1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S4M1 <- AICc(encpropst1)
 
-encpropst2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropst2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M2 <- AICc(encpropst2)
 
-encpropst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, family=gaussian())
+encpropst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M3 <- AICc(encpropst3)
 
-encpropst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M4 <- AICc(encpropst4)
 
-encpropst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M5 <- AICc(encpropst5)
 
-encpropst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M6 <- AICc(encpropst6)
 
-encpropst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+Spr.Trs,data=sprtrns, family=gaussian())
+encpropst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M7 <- AICc(encpropst7)
 
-encpropst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+Spr.Trs+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Prop.Hsig+Spr.Trs+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S4M8 <- AICc(encpropst8)
 
 S4M1+ S4M2 + S4M3+ S4M4 + S4M5+ S4M6+ S4M7+ S4M8
 #610.4789
 #Set 5- PropH and Feb
-encpropfeb1 <- glm(encrates$Sum~1, family=gaussian())
+encpropfeb1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S5M1 <- AICc(encpropfeb1)
 
-encpropfeb2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropfeb2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M2 <- AICc(encpropfeb2)
 
-encpropfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encpropfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M3 <- AICc(encpropfeb3)
 
-encpropfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M4 <- AICc(encpropfeb4)
 
-encpropfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M5 <- AICc(encpropfeb5)
 
-encpropfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M6 <- AICc(encpropfeb6)
 
-encpropfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encpropfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M7 <- AICc(encpropfeb7)
 
-encpropfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+febcumup$Upwelling.Index+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Prop.Hsig+febcumup$Upwelling.Index+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S5M8 <- AICc(encpropfeb8)
 
 S5M1+ S5M2 + S5M3+ S5M4 + S5M5+ S5M6+ S5M7+ S5M8
 #608.4354
 #Set 6- PropH and Jun
-encpropjun1 <- glm(encrates$Sum~1, family=gaussian())
+encpropjun1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S6M1 <- AICc(encpropjun1)
 
-encpropjun2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropjun2 <- glm(encrates$Sum~waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M2 <- AICc(encpropjun2)
 
-encpropjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encpropjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M3 <- AICc(encpropjun3)
 
-encpropjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M4 <- AICc(encpropjun4)
 
-encpropjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M5 <- AICc(encpropjun5)
 
-encpropjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M6 <- AICc(encpropjun6)
 
-encpropjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encpropjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M7 <- AICc(encpropjun7)
 
-encpropjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+juncumup$Upwelling.index+waveindex$Prop.Hsig,data=sprtrns, family=gaussian())
+encpropjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Prop.Hsig+juncumup$Upwelling.index+waveindex$Prop.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S6M8 <- AICc(encpropjun8)
 
 S6M1+ S6M2 + S6M3+ S6M4 + S6M5+ S6M6+ S6M7+ S6M8
 #631.2861
 
 #Set 7- Nevents and ST
-encceventst1 <- glm(encrates$Sum~1, family=gaussian())
+encceventst1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S7M1 <- AICc(encceventst1)
 
-encceventst2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventst2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M2 <- AICc(encceventst2)
 
-encceventst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, family=gaussian())
+encceventst3 <- glm(encrates$Sum~Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M3 <- AICc(encceventst3)
 
-encceventst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventst4 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M4 <- AICc(encceventst4)
 
-encceventst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventst5 <- glm(encrates$Sum~Spr.Trs+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M5 <- AICc(encceventst5)
 
-encceventst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventst6 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M6 <- AICc(encceventst6)
 
-encceventst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs,data=sprtrns, family=gaussian())
+encceventst7 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M7 <- AICc(encceventst7)
 
-encceventst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventst8 <- glm(encrates$Sum~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S7M8 <- AICc(encceventst8)
 
 S7M1+ S7M2 + S7M3+ S7M4 + S7M5+ S7M6+ S7M7+ S7M8
 #591.3047
+encaic <- unlist(list(S7M1, S7M2, S7M3, S7M4, S7M5, S7M6, S7M7, S7M8))
+encaicweights <- akaike.weights(encaic)
+(encaicweights$weights)
 #Winner
 #Set 8- Nevents and Feb
-encceventfeb1 <- glm(encrates$Sum~1, family=gaussian())
+encceventfeb1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S8M1 <- AICc(encceventfeb1)
 
-encceventfeb2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventfeb2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M2 <- AICc(encceventfeb2)
 
-encceventfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encceventfeb3 <- glm(encrates$Sum~febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M3 <- AICc(encceventfeb3)
 
-encceventfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventfeb4 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M4 <- AICc(encceventfeb4)
 
-encceventfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventfeb5 <- glm(encrates$Sum~febcumup$Upwelling.Index+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M5 <- AICc(encceventfeb5)
 
-encceventfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventfeb6 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M6 <- AICc(encceventfeb6)
 
-encceventfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+febcumup$Upwelling.Index,data=sprtrns, family=gaussian())
+encceventfeb7 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+febcumup$Upwelling.Index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M7 <- AICc(encceventfeb7)
 
-encceventfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+febcumup$Upwelling.Index+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventfeb8 <- glm(encrates$Sum~febcumup$Upwelling.Index*waveindex$Nevent.Hsig+febcumup$Upwelling.Index+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S8M8 <- AICc(encceventfeb8)
 
 S8M1+ S8M2 + S8M3+ S8M4 + S8M5+ S8M6+ S8M7+ S8M8
 #600.6794
 #Set 9- Nevents and June
-encceventjun1 <- glm(encrates$Sum~1, family=gaussian())
+encceventjun1 <- glm(encrates$Sum~1, weights = glmwt$Er.Wt, family=gaussian())
 S9M1 <- AICc(encceventjun1)
 
-encceventjun2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventjun2 <- glm(encrates$Sum~waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M2 <- AICc(encceventjun2)
 
-encceventjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encceventjun3 <- glm(encrates$Sum~juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M3 <- AICc(encceventjun3)
 
-encceventjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventjun4 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M4 <- AICc(encceventjun4)
 
-encceventjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventjun5 <- glm(encrates$Sum~juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M5 <- AICc(encceventjun5)
 
-encceventjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventjun6 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M6 <- AICc(encceventjun6)
 
-encceventjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index,data=sprtrns, family=gaussian())
+encceventjun7 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M7 <- AICc(encceventjun7)
 
-encceventjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns, family=gaussian())
+encceventjun8 <- glm(encrates$Sum~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns, weights = glmwt$Er.Wt, family=gaussian())
 S9M8 <- AICc(encceventjun8)
 
 S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
