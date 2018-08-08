@@ -1758,7 +1758,9 @@ S6M8 <- AICc(locpropjun8)
 
 S6M1+ S6M2 + S6M3+ S6M4 + S6M5+ S6M6+ S6M7+ S6M8
 #959.8331
-
+locaic <- unlist(list(S6M1, S6M2, S6M3, S6M4, S6M5, S6M6, S6M7, S6M8))
+locaicweights <- akaike.weights(locaic)
+(locaicweights$weights)
 #Set 7- Nevents and ST
 locneventst1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S7M1 <- AICc(locneventst1)
@@ -1785,11 +1787,9 @@ locneventst8 <- glm(peakloc$DOY.PE~Spr.Trs*waveindex$Nevent.Hsig+Spr.Trs+waveind
 S7M8 <- AICc(locneventst8)
 
 S7M1+ S7M2 + S7M3+ S7M4 + S7M5+ S7M6+ S7M7+ S7M8
-locaic <- unlist(list(S7M1, S7M2, S7M3, S7M4, S7M5, S7M6, S7M7, S7M8))
-locaicweights <- akaike.weights(locaic)
-(locaicweights$weights)
+
 #964.5711
-#winner
+
 #Set 8- Nevents and Feb
 locneventfeb1 <- glm(peakloc$DOY.PE~1,weights=glmwt$Peak.Loc.Wt, family=gaussian())
 S8M1 <- AICc(locneventfeb1)
@@ -1840,8 +1840,9 @@ locneventjun7 <- glm(peakloc$DOY.PE~juncumup$Upwelling.index*waveindex$Nevent.Hs
 S9M7 <- AICc(locneventjun7)
 
 locneventjun8 <- glm(peakloc$DOY.PE~juncumup$Upwelling.index*waveindex$Nevent.Hsig+juncumup$Upwelling.index+waveindex$Nevent.Hsig,data=sprtrns,weights=glmwt$Peak.Loc.Wt, family=gaussian())
-
+S9M8 <- AICc(locneventjun8)
 S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
+#973.8369
 
 ############################################Duration##################################################################
 
@@ -1876,10 +1877,7 @@ S1M8 <-AICc(duravgst8)
 
 S1M1 + S1M2+ S1M3+ S1M4+ S1M5+ S1M6 + S1M7 + S1M8
 #1086.713
-duraic <- unlist(list(S1M1, S1M2, S1M3, S1M4, S1M5, S1M6, S1M7, S1M8))
-duraicweights<- akaike.weights(duraic)
-(duraicweights$weights)
-# Winner winner
+
 #Set 2- AvgH and Feb
 duravgfeb1 <- glm(duration$Duration~1,weights=glmwt$Dur.Wt, family=gaussian())
 S2M1<- AICc(duravgfeb1)
@@ -1934,7 +1932,9 @@ S3M8 <- AICc(duravgjun8)
 
 S3M1+ S3M2 + S3M3+ S3M4 + S3M5+ S3M6+ S3M7+ S3M8
 #1086.001
-
+duraic <- unlist(list(S3M1, S3M2, S3M3, S3M4, S3M5, S3M6, S3M7, S3M8))
+duraicweights<- akaike.weights(duraic)
+(duraicweights$weights)
 #Set 4- PropH and ST
 durpropst1 <- glm(duration$Duration~1,weights=glmwt$Dur.Wt, family=gaussian())
 S4M1 <- AICc(durpropst1)
@@ -2354,3 +2354,26 @@ S9M8 <- AICc(encceventjun8)
 
 S9M1+ S9M2 + S9M3+ S9M4 + S9M5+ S9M6+ S9M7+ S9M8
 #631.2323
+#Making world map
+beach.coord <- read.csv ("../murreglm/beach.coord.csv")
+library(maps)
+library(mapdata)
+library(GISTools)
+library(raster)
+
+map('state',c('California','Oregon','Washington','Nevada', 'Idaho', 'montana'),fill=TRUE,col="gray92",xlim=c(-128,-116),ylim=c(30,50),lforce="s")
+points(beach.coord, col="gray28", pch=19,cex=.75)
+maps::map.scale( relwidth=0.4,metric=TRUE, x=-125)
+axis(1, at = seq(-128,-4, 4), parse(text=degreeLabelsEW(seq(-128,-4,4))))
+axis(2, at = seq(30,50,4), parse(text=degreeLabelsNS(seq(30,50,4))))
+north.arrow(-126, 47, .4, lab="N", col="gray28")
+box()
+
+map('state',c('California','Oregon','Washington'),fill=TRUE,col="gray92",xlim=c(-130,-121),ylim=c(38,50),lforce="s")
+points(beach.coord, col="gray28", pch=19,cex=.9)
+maps::map.scale( relwidth=0.4,metric=TRUE, x=-129)
+axis(1, at = seq(-130,-2, 2), parse(text=degreeLabelsEW(seq(-130,-2,2))))
+axis(2, at = seq(38,50,2), parse(text=degreeLabelsNS(seq(38,50,2))))
+north.arrow(-127, 47, .4, lab="N", col="gray28")
+box()
+
